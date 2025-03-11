@@ -1,0 +1,284 @@
+Microsoft Windows [Version 10.0.22631.4890]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\lenovo>CD C:\xampp\mysql\bin
+
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 8
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| akademik           |
+| information_schema |
+| mahasiswa          |
+| mysql              |
+| nopel              |
+| novel              |
+| performance_schema |
+| perusahaan         |
+| phpmyadmin         |
+| siperpus           |
+| test               |
++--------------------+
+11 rows in set (0.060 sec)
+
+MariaDB [(none)]> create database pratikum_sql;
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [(none)]> use pratikum_sql;
+Database changed
+MariaDB [pratikum_sql]> create table products (
+    -> product_id int primary key auto_increment,
+    -> product_name varchar(100),
+    -> category varchar(50),
+    -> price decimal(10, 2)
+    -> );
+Query OK, 0 rows affected (0.088 sec)
+
+MariaDB [pratikum_sql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| akademik           |
+| information_schema |
+| mahasiswa          |
+| mysql              |
+| nopel              |
+| novel              |
+| performance_schema |
+| perusahaan         |
+| phpmyadmin         |
+| pratikum_sql       |
+| siperpus           |
+| test               |
++--------------------+
+12 rows in set (0.020 sec)
+
+MariaDB [pratikum_sql]> desc products;
++--------------+---------------+------+-----+---------+----------------+
+| Field        | Type          | Null | Key | Default | Extra          |
++--------------+---------------+------+-----+---------+----------------+
+| product_id   | int(11)       | NO   | PRI | NULL    | auto_increment |
+| product_name | varchar(100)  | YES  |     | NULL    |                |
+| category     | varchar(50)   | YES  |     | NULL    |                |
+| price        | decimal(10,2) | YES  |     | NULL    |                |
++--------------+---------------+------+-----+---------+----------------+
+4 rows in set (0.062 sec)
+
+MariaDB [pratikum_sql]> insert into products (product_name, category, price) values
+    -> ('Laptop A', 'Electronics', 1200.00),
+    -> ('Smartphone B', 'Electronics', 800.00),
+    -> ('Tablet C', 'Electronics', 500.00),
+    -> ('Shirt D', 'Clothing', 25.00),
+    -> ('Jeans E', 'Clothing', 45.00),
+    -> ('Shoes F', 'Clothing', 60.00),
+    -> ('Book G', 'Books', 15.00),
+    -> ('Notebook H', 'Books', 10.00),
+    -> ('Pen I', 'Stationery', 2.00),
+    -> ('Pencil J', 'Stationery', 1.50);
+Query OK, 10 rows affected (0.070 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+MariaDB [pratikum_sql]> select * from products;
++------------+--------------+-------------+---------+
+| product_id | product_name | category    | price   |
++------------+--------------+-------------+---------+
+|          1 | Laptop A     | Electronics | 1200.00 |
+|          2 | Smartphone B | Electronics |  800.00 |
+|          3 | Tablet C     | Electronics |  500.00 |
+|          4 | Shirt D      | Clothing    |   25.00 |
+|          5 | Jeans E      | Clothing    |   45.00 |
+|          6 | Shoes F      | Clothing    |   60.00 |
+|          7 | Book G       | Books       |   15.00 |
+|          8 | Notebook H   | Books       |   10.00 |
+|          9 | Pen I        | Stationery  |    2.00 |
+|         10 | Pencil J     | Stationery  |    1.50 |
++------------+--------------+-------------+---------+
+10 rows in set (0.002 sec)
+
+MariaDB [pratikum_sql]> select count(*) as total_price from products;
++-------------+
+| total_price |
++-------------+
+|          10 |
++-------------+
+1 row in set (0.001 sec)
+
+MariaDB [pratikum_sql]> select sum(price) as total_price from products;
++-------------+
+| total_price |
++-------------+
+|     2658.50 |
++-------------+
+1 row in set (0.001 sec)
+
+MariaDB [pratikum_sql]> select avg(price) as average_price from products;
++---------------+
+| average_price |
++---------------+
+|    265.850000 |
++---------------+
+1 row in set (0.001 sec)
+
+MariaDB [pratikum_sql]> select min(price) as cheapest_product, max(price) as most_expensive_product fr
+om products;
++------------------+------------------------+
+| cheapest_product | most_expensive_product |
++------------------+------------------------+
+|             1.50 |                1200.00 |
++------------------+------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [pratikum_sql]> select * from products where price > 50;
++------------+--------------+-------------+---------+
+| product_id | product_name | category    | price   |
++------------+--------------+-------------+---------+
+|          1 | Laptop A     | Electronics | 1200.00 |
+|          2 | Smartphone B | Electronics |  800.00 |
+|          3 | Tablet C     | Electronics |  500.00 |
+|          6 | Shoes F      | Clothing    |   60.00 |
++------------+--------------+-------------+---------+
+4 rows in set (0.099 sec)
+
+MariaDB [pratikum_sql]> select * from products where category = 'Electronics';
++------------+--------------+-------------+---------+
+| product_id | product_name | category    | price   |
++------------+--------------+-------------+---------+
+|          1 | Laptop A     | Electronics | 1200.00 |
+|          2 | Smartphone B | Electronics |  800.00 |
+|          3 | Tablet C     | Electronics |  500.00 |
++------------+--------------+-------------+---------+
+3 rows in set (0.004 sec)
+
+MariaDB [pratikum_sql]> select * from products where price between 20 and 100;
++------------+--------------+----------+-------+
+| product_id | product_name | category | price |
++------------+--------------+----------+-------+
+|          4 | Shirt D      | Clothing | 25.00 |
+|          5 | Jeans E      | Clothing | 45.00 |
+|          6 | Shoes F      | Clothing | 60.00 |
++------------+--------------+----------+-------+
+3 rows in set (0.007 sec)
+
+MariaDB [pratikum_sql]> select * from products where product_name like 'S%';
++------------+--------------+-------------+--------+
+| product_id | product_name | category    | price  |
++------------+--------------+-------------+--------+
+|          2 | Smartphone B | Electronics | 800.00 |
+|          4 | Shirt D      | Clothing    |  25.00 |
+|          6 | Shoes F      | Clothing    |  60.00 |
++------------+--------------+-------------+--------+
+3 rows in set (0.010 sec)
+
+MariaDB [pratikum_sql]> select category, count(*) as total_products
+    -> from products
+    -> group by category;
++-------------+----------------+
+| category    | total_products |
++-------------+----------------+
+| Books       |              2 |
+| Clothing    |              3 |
+| Electronics |              3 |
+| Stationery  |              2 |
++-------------+----------------+
+4 rows in set (0.031 sec)
+
+MariaDB [pratikum_sql]> select category, avg(price) as average_price
+    -> from products
+    -> group by category;
++-------------+---------------+
+| category    | average_price |
++-------------+---------------+
+| Books       |     12.500000 |
+| Clothing    |     43.333333 |
+| Electronics |    833.333333 |
+| Stationery  |      1.750000 |
++-------------+---------------+
+4 rows in set (0.004 sec)
+
+MariaDB [pratikum_sql]> select category, avg(price) as average_price
+    -> from products
+    -> group by category
+    -> having avg(price) > 100;
++-------------+---------------+
+| category    | average_price |
++-------------+---------------+
+| Electronics |    833.333333 |
++-------------+---------------+
+1 row in set (0.030 sec)
+
+MariaDB [pratikum_sql]> select category, count(*) as total_products
+    -> from products
+    -> group by category
+    -> having count(*) > 2;
++-------------+----------------+
+| category    | total_products |
++-------------+----------------+
+| Clothing    |              3 |
+| Electronics |              3 |
++-------------+----------------+
+2 rows in set (0.001 sec)
+
+MariaDB [pratikum_sql]> select category, max(price) as max_price
+    -> from products
+    -> group by category;
++-------------+-----------+
+| category    | max_price |
++-------------+-----------+
+| Books       |     15.00 |
+| Clothing    |     60.00 |
+| Electronics |   1200.00 |
+| Stationery  |      2.00 |
++-------------+-----------+
+4 rows in set (0.022 sec)
+
+MariaDB [pratikum_sql]> select category, min(price) as min_price
+    -> from products
+    -> group by category;
++-------------+-----------+
+| category    | min_price |
++-------------+-----------+
+| Books       |     10.00 |
+| Clothing    |     25.00 |
+| Electronics |    500.00 |
+| Stationery  |      1.50 |
++-------------+-----------+
+4 rows in set (0.001 sec)
+
+MariaDB [pratikum_sql]> select category, max(price) as max_price
+    -> from products
+    -> group by category
+    -> having max(price) > 500;
++-------------+-----------+
+| category    | max_price |
++-------------+-----------+
+| Electronics |   1200.00 |
++-------------+-----------+
+1 row in set (0.001 sec)
+
+MariaDB [pratikum_sql]> select category, count(*) as total_products, sum(price) as total_har
+ga
+    -> from products
+    -> group by category
+    -> having count(*) > 1;
++-------------+----------------+-------------+
+| category    | total_products | total_harga |
++-------------+----------------+-------------+
+| Books       |              2 |       25.00 |
+| Clothing    |              3 |      130.00 |
+| Electronics |              3 |     2500.00 |
+| Stationery  |              2 |        3.50 |
++-------------+----------------+-------------+
+4 rows in set (0.080 sec)
+
+MariaDB [pratikum_sql]> Bye
+Ctrl-C -- exit!
