@@ -228,6 +228,27 @@ MariaDB [pratikum_sql]> select category, count(*) as total_products
 +-------------+----------------+
 2 rows in set (0.001 sec)
 
+MariaDB [pratikum_sql]> SELECT SUM(price) AS total_price
+    -> FROM products
+    -> WHERE category = 'Electronics' ;
++-------------+
+| total_price |
++-------------+
+|     2500.00 |
++-------------+
+1 row in set (0.008 sec)
+
+MariaDB [pratikum_sql]> SELECT category, SUM(price) AS total_price
+    -> FROM products
+    -> GROUP BY category
+    -> HAVING SUM(price) > 1000;
++-------------+-------------+
+| category    | total_price |
++-------------+-------------+
+| Electronics |     2500.00 |
++-------------+-------------+
+1 row in set (0.011 sec)
+
 MariaDB [pratikum_sql]> select category, max(price) as max_price
     -> from products
     -> group by category;
