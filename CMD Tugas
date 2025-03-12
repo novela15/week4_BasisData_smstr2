@@ -1,0 +1,147 @@
+C:\xampp\mysql\bin>mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 9
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use novel;
+Database changed
+MariaDB [novel]> create table mahasiswa (
+    -> NPM char(10) primary key,
+    -> Nama varchar(30),
+    -> jurusan varchar(20)
+    -> );
+Query OK, 0 rows affected (0.042 sec)
+
+MariaDB [novel]> INSERT INTO mahasiswa (NPM, Nama, jurusan) VALUES
+    -> ('2420506040', 'Novela Eka Saputri', 'Teknologi Informasi'),
+    -> ('2420506041', 'Esha', 'Teknologi Informasi'),
+    -> ('2420501044', 'Yeonjun', 'Elektro'),
+    -> ('2420501032', 'Kai', 'Elektro'),
+    -> ('2430508063', 'Fifi', 'Teknik Industri'),
+    -> ('2430508020', 'Dwi', 'Teknik Industri'),
+    -> ('2410701037', 'Novia', 'Peternakan');
+Query OK, 7 rows affected (0.066 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+MariaDB [novel]> select * from mahasiswa;
++------------+--------------------+---------------------+
+| NPM        | Nama               | jurusan             |
++------------+--------------------+---------------------+
+| 2410701037 | Novia              | Peternakan          |
+| 2420501032 | Kai                | Elektro             |
+| 2420501044 | Yeonjun            | Elektro             |
+| 2420506040 | Novela Eka Saputri | Teknologi Informasi |
+| 2420506041 | Esha               | Teknologi Informasi |
+| 2430508020 | Dwi                | Teknik Industri     |
+| 2430508063 | Fifi               | Teknik Industri     |
++------------+--------------------+---------------------+
+7 rows in set (0.004 sec)
+
+MariaDB [novel]> CREATE TABLE mata_kuliah (
+    -> kode_mk VARCHAR(10) PRIMARY KEY,
+    -> nama_mk VARCHAR(100),
+    -> sks INT
+    -> );
+Query OK, 0 rows affected (0.018 sec)
+
+MariaDB [novel]> INSERT INTO mata_kuliah (kode_mk, nama_mk, sks) VALUES
+    -> ('MK001', 'Basis Data', 3),
+    -> ('MK002', 'Struktur Data', 3),
+    -> ('MK003', 'Kalkulus', 2);
+Query OK, 3 rows affected (0.016 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [novel]> select * from mata_kuliah;
++---------+---------------+------+
+| kode_mk | nama_mk       | sks  |
++---------+---------------+------+
+| MK001   | Basis Data    |    3 |
+| MK002   | Struktur Data |    3 |
+| MK003   | Kalkulus      |    2 |
++---------+---------------+------+
+3 rows in set (0.002 sec)
+
+MariaDB [novel]> CREATE TABLE nilai (
+    -> id INT AUTO_INCREMENT PRIMARY KEY,
+    -> npm VARCHAR(10),
+    -> kode_mk VARCHAR(10),
+    -> nilai INT,
+    -> FOREIGN KEY (npm) REFERENCES mahasiswa(npm),
+    -> FOREIGN KEY (kode_mk) REFERENCES mata_kuliah(kode_mk)
+    -> );
+Query OK, 0 rows affected (0.060 sec)
+
+
+MariaDB [novel]> INSERT INTO nilai (npm, kode_mk, nilai) VALUES
+    -> ('2420501044', 'MK001', 88),
+    -> ('2420506041', 'MK002', 90),
+    -> ('2420506040', 'MK001', 93),
+    -> ('2420501032', 'MK003', 75),
+    -> ('2430508063', 'MK002', 95),
+    -> ('2430508020', 'MK003', 80);
+Query OK, 7 rows affected (0.024 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+MariaDB [novel]> select * from nilai;
++----+------------+---------+-------+
+| id | npm        | kode_mk | nilai |
++----+------------+---------+-------+
+|  1 | 2420506040 | MK001   |    93 |
+|  2 | 2420506041 | MK002   |    90 |
+|  3 | 2420506041 | MK002   |    90 |
+|  4 | 2420506040 | MK001   |    93 |
+|  5 | 2420501032 | MK003   |    75 |
+|  6 | 2430508063 | MK002   |    95 |
+|  7 | 2430508020 | MK003   |    80 |
++----+------------+---------+-------+
+7 rows in set (0.001 sec)
+
+MariaDB [novel]> SELECT jurusan, COUNT(*) AS jumlah_mahasiswa
+    -> FROM mahasiswa
+    -> GROUP BY jurusan;
++---------------------+------------------+
+| jurusan             | jumlah_mahasiswa |
++---------------------+------------------+
+| Elektro             |                2 |
+| Peternakan          |                1 |
+| Teknik Industri     |                2 |
+| Teknologi Informasi |                2 |
++---------------------+------------------+
+4 rows in set (0.003 sec)
+
+MariaDB [novel]> SELECT n.kode_mk, mk.nama_mk, m.NPM, m.Nama, n.nilai
+    -> FROM nilai n
+    -> JOIN mahasiswa m ON n.npm = m.NPM
+    -> JOIN mata_kuliah mk ON n.kode_mk = mk.kode_mk
+    -> WHERE n.nilai = (SELECT MAX(nilai)
+    ->                   FROM nilai
+    ->                   WHERE kode_mk = n.kode_mk);
++---------+---------------+------------+--------------------+-------+
+| kode_mk | nama_mk       | NPM        | Nama               | nilai |
++---------+---------------+------------+--------------------+-------+
+| MK001   | Basis Data    | 2420506040 | Novela Eka Saputri |    93 |
+| MK001   | Basis Data    | 2420506040 | Novela Eka Saputri |    93 |
+| MK002   | Struktur Data | 2430508063 | Fifi               |    95 |
+| MK003   | Kalkulus      | 2430508020 | Dwi                |    80 |
++---------+---------------+------------+--------------------+-------+
+4 rows in set (0.063 sec)
+
+MariaDB [novel]> SELECT m.NPM, m.Nama, COUNT(n.kode_mk) AS jumlah_mk
+    -> FROM mahasiswa m
+    -> JOIN nilai n ON m.NPM = n.npm
+    -> GROUP BY m.NPM, m.Nama;
++------------+--------------------+-----------+
+| NPM        | Nama               | jumlah_mk |
++------------+--------------------+-----------+
+| 2420501032 | Kai                |         1 |
+| 2420506040 | Novela Eka Saputri |         2 |
+| 2420506041 | Esha               |         2 |
+| 2430508020 | Dwi                |         1 |
+| 2430508063 | Fifi               |         1 |
++------------+--------------------+-----------+
+5 rows in set (0.010 sec)
